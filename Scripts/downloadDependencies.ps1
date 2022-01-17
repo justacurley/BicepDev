@@ -13,9 +13,11 @@ param (
 )
 try {
     $FileName = ($DownloadUri.Split('/')[-1])
-    Invoke-WebRequest -Uri $DownloadUri -OutFile (Join-Path $OutputFolder $FileName) -ErrorAction Stop | Out-Null
+    $Destination = (Join-Path $OutputFolder $FileName)
+    Invoke-WebRequest -Uri $DownloadUri -OutFile $Destination -ErrorAction Stop | Out-Null
     if ($OutputFileName) {
-        Get-Item (Join-Path $OutputFolder $FileName) | Rename-Item -NewName $OutputFileName
+        Get-Item $Destination | Rename-Item -NewName $OutputFileName
+        Write-Information "$OutputFileName downloaded to $OutputFolder" -InformationAction Continue
     }
 }
 catch {
