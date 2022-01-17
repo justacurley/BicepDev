@@ -24,3 +24,6 @@ jobs:
         with:
           version: ${{ steps.gitversion.outputs.LegacySemVerPadded }}
           destination: ${{github.workspace}}/output
+      - name: Download required assemblies
+      shell: pwsh
+      run: ./scripts/downloadDependencies.ps1 -OutputFolder ${{github.workspace}}/output
