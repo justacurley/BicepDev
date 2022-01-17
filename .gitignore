@@ -1,1 +1,3 @@
 Output
+Tests/SampleData/Modules/**/*_*.bicep
+Tests/SampleData/Modules/**/*_*.json
