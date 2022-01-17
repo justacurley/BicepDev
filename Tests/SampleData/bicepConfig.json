@@ -1,0 +1,44 @@
+{
+    "analyzers": {
+      "core": {
+        "enabled": false,
+        "verbose": false,
+        "rules": {
+          "adminusername-should-not-be-literal": {
+            "level": "off"
+          },
+          "no-hardcoded-env-urls": {
+            "level": "off"
+          },
+          "no-unnecessary-dependson": {
+            "level": "off"
+          },
+          "no-unused-params": {
+            "level": "off"
+          },
+          "no-unused-vars": {
+            "level": "off"
+          },
+          "outputs-should-not-contain-secrets": {
+            "level": "off"
+          },
+          "prefer-interpolation": {
+            "level": "off"
+          },
+          "secure-parameter-default": {
+            "level": "off"
+          },
+          "simplify-interpolation": {
+            "level": "off"
+          },
+          "use-protectedsettings-for-commandtoexecute-secrets": {
+            "level": "off"
+          },
+          "use-stable-vm-image": {
+            "level": "off"
+          }
+
+        }
+      }
+    }
+  }
