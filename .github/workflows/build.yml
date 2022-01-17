@@ -24,6 +24,43 @@ jobs:
         with:
           version: ${{ steps.gitversion.outputs.LegacySemVerPadded }}
           destination: ${{github.workspace}}/output
-      - name: Download required assemblies
+      - name: Download required binaries
         shell: pwsh
         run: ./scripts/downloadDependencies.ps1 -OutputFolder ${{github.workspace}}/output
+      - name: Upload Build Output
+        uses: actions/upload-artifact@v2
+        with:
+          name: Modules
+          path: ${{github.workspace}}/output
+      - name: Upload Tests
+        uses: actions/upload-artifact@v2
+        with:
+          name: PesterTests
+          path: ${{github.workspace}}/Tests
+      - name: Upload RequiredModules.psd1
+        uses: actions/upload-artifact@v2
+        with:
+          name: RequiredModules
+          path: ${{github.workspace}}/RequiredModules.psd1
+      - name: Upload PSScriptAnalyzerSettings.psd1
+        uses: actions/upload-artifact@v2
+        with:
+          name: ScriptAnalyzer
+          path: ${{github.workspace}}/PSScriptAnalyzerSettings.psd1
+  test:
+    runs-on: windows-latest   
+    needs: build
+    steps:
+      - name: Download Build Output
+        uses: actions/download-artifact@v2
+      - uses: PoshCode/Actions/install-requiredmodules@v1
+      - uses: PoshCode/Actions/pester@v1
+        with:
+          codeCoveragePath: Modules/BicepDev
+          moduleUnderTest: BicepDev
+          additionalModulePaths: ${{github.workspace}}/Modules
+      - name: Upload Results
+        uses: actions/upload-artifact@v2
+        with:
+          name: Pester Results
+          path: ${{github.workspace}}/*.xml
