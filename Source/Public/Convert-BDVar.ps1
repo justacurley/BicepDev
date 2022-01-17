@@ -25,22 +25,24 @@ function Convert-BDVar {
         [System.IO.FileInfo]
         $BuiltModule
     )
-    $ModuleFileContent = Get-Content $BuiltModule.FullName -Encoding 'utf8' -Raw | ConvertFrom-Json
-    $ModuleFileContent.variables | Add-Member 'bdVariables' ([pscustomobject]@{})
-    $ModuleFileContent.variables | Add-Member 'bdCopyVars' ([pscustomobject]@{})
-    $ModuleFileContent.variables.psobject.Properties | foreach {
-        $name = $_.name
-        $value = $_.value
-        if ($name -notin @('copy','bdVariables','bdCopyVars')) {
-            $ModuleFileContent.variables.bdVariables | Add-Member NoteProperty $name $PSItem.Value -Force
-        }
-        elseif ($name -eq 'copy') {
-            foreach ($copyArray in $value) {
-                $ModuleFileContent.variables.bdCopyVars | Add-Member NoteProperty $copyArray.Name ("[variables('{0}')]" -f $copyArray.name) -Force
+    process {
+        $ModuleFileContent = Get-Content $BuiltModule.FullName -Encoding 'utf8' -Raw | ConvertFrom-Json
+        $ModuleFileContent.variables | Add-Member 'bdVariables' ([pscustomobject]@{})
+        $ModuleFileContent.variables | Add-Member 'bdCopyVars' ([pscustomobject]@{})
+        $ModuleFileContent.variables.psobject.Properties | ForEach-Object {
+            $name = $_.name
+            $value = $_.value
+            if ($name -notin @('copy','bdVariables','bdCopyVars')) {
+                $ModuleFileContent.variables.bdVariables | Add-Member NoteProperty $name $PSItem.Value -Force
+            }
+            elseif ($name -eq 'copy') {
+                foreach ($copyArray in $value) {
+                    $ModuleFileContent.variables.bdCopyVars | Add-Member NoteProperty $copyArray.Name ("[variables('{0}')]" -f $copyArray.name) -Force
+                }
             }
         }
+        $ModuleFileContent.outputs | Add-Member NoteProperty "bdCopyVars" @{type = 'object'; value = "[variables('bdCopyVars')]" } -Force
+        $ModuleFileContent.outputs | Add-Member NoteProperty "bdVariables" @{type = 'object'; value = "[variables('bdVariables')]"} -Force
+        $ModuleFileContent | ConvertTo-Json -Depth 99 | Out-File $BuiltModule.FullName
     }
-    $ModuleFileContent.outputs | Add-Member NoteProperty "bdCopyVars" @{type = 'object'; value = "[variables('bdCopyVars')]" } -Force
-    $ModuleFileContent.outputs | Add-Member NoteProperty "bdVariables" @{type = 'object'; value = "[variables('bdVariables')]"} -Force
-    $ModuleFileContent | ConvertTo-Json -Depth 99 | Out-File $BuiltModule.FullName
 }

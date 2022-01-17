@@ -21,11 +21,13 @@ function Convert-BDParam {
         # [string[]]
         # $ParametersToConvert
     )
-    $ModuleFileContent = Get-Content $BuiltModule.FullName -Encoding 'utf8' -Raw | ConvertFrom-Json
-    $ModuleFileContent.parameters.psobject.Properties | foreach {
-        $name = $_.name
-        $value = "[parameters('{0}')]" -f $name
-        $ModuleFileContent.outputs | Add-Member NoteProperty "pars_$name" @{type = $PSItem.Value.type; value = $value } -Force
+    process {
+        $ModuleFileContent = Get-Content $BuiltModule.FullName -Encoding 'utf8' -Raw | ConvertFrom-Json
+        $ModuleFileContent.parameters.psobject.Properties | ForEach-Object {
+            $name = $_.name
+            $value = "[parameters('{0}')]" -f $name
+            $ModuleFileContent.outputs | Add-Member NoteProperty "pars_$name" @{type = $PSItem.Value.type; value = $value } -Force
+        }
+        $ModuleFileContent | ConvertTo-Json -Depth 99 | Out-File $BuiltModule.FullName
     }
-    $ModuleFileContent | ConvertTo-Json -Depth 99 | Out-File $BuiltModule.FullName
 }

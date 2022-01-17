@@ -30,7 +30,9 @@ function Add-BDOutput {
         [parameter(Mandatory, HelpMessage = "Value of the output")]
         $Value
     )
-    $ModuleFileContent = Get-Content $BuiltModule.FullName -Encoding 'utf8' -Raw | ConvertFrom-Json
-    $ModuleFileContent.outputs | Add-Member NoteProperty $Name @{type = $type; value = $Value} -Force
-    $ModuleFileContent | ConvertTo-Json -Depth 99 | Out-File $BuiltModule.FullName
+    process {
+        $ModuleFileContent = Get-Content $BuiltModule.FullName -Encoding 'utf8' -Raw | ConvertFrom-Json
+        $ModuleFileContent.outputs | Add-Member NoteProperty $Name @{type = $type; value = $Value} -Force
+        $ModuleFileContent | ConvertTo-Json -Depth 99 | Out-File $BuiltModule.FullName
+    }
 }

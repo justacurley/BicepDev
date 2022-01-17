@@ -21,7 +21,7 @@ function New-BDFile {
         TODO Make {$BicepDepFileContent -replace "'.*$ReplaceString'", "'$($NewBicModFile.Name)'"} handle more than 0 path levels
         TODO Catch failed bicep builds
     #>
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess)]
     param (
         [Parameter(Mandatory, HelpMessage = "The .bicep file that calls the bicep module we want to transform")]
         [ValidateScript( { Test-Path $_ })]

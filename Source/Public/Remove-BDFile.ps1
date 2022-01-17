@@ -12,7 +12,7 @@ function Remove-BDFile {
     .NOTES
         TODO search for and remove BDFiles if no parameters are passed in
     #>
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess)]
     param (
         [Parameter(ValueFromPipelineByPropertyName, HelpMessage = "The .bicep file that calls the bicep module we want to transform")]
         [Alias('Deploy')]
@@ -26,7 +26,9 @@ function Remove-BDFile {
         [System.IO.FileInfo]
         $BuiltModule
     )
-    $PSBoundParameters.GetEnumerator().ForEach( {
-            $_.Value | Remove-Item -Force
-        })
+    process {
+        $PSBoundParameters.GetEnumerator().ForEach( {
+                $_.Value | Remove-Item -Force
+            })
+    }
 }
