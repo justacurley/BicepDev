@@ -11,6 +11,7 @@ function Remove-BDFile {
         (New-BDFile)
     .NOTES
         TODO search for and remove BDFiles if no parameters are passed in
+        TODO this cmdlet throws when $bd.outputname is piped in
     #>
     [CmdletBinding(SupportsShouldProcess)]
     param (

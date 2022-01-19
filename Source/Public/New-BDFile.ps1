@@ -20,6 +20,8 @@ function New-BDFile {
     .NOTES
         TODO Make {$BicepDepFileContent -replace "'.*$ReplaceString'", "'$($NewBicModFile.Name)'"} handle more than 0 path levels
         TODO Catch failed bicep builds
+        TODO write all these temp files to the temp directory so you don't have to deal with it in your workspace
+        TODO Write New-BDDeployment controller function
     #>
     [CmdletBinding(SupportsShouldProcess)]
     param (
