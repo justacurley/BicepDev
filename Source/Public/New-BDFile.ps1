@@ -19,7 +19,6 @@ function New-BDFile {
         [PSCustomObject]
     .NOTES
         TODO Make {$BicepDepFileContent -replace "'.*$ReplaceString'", "'$($NewBicModFile.Name)'"} handle more than 0 path levels
-        TODO Catch failed bicep builds
         TODO write all these temp files to the temp directory so you don't have to deal with it in your workspace
         TODO Write New-BDDeployment controller function
         TODO If there is not an Outputs[] in builttemplate, add it or convert-bd* will throw
