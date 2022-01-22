@@ -19,9 +19,7 @@ function New-BDFile {
         [PSCustomObject]
     .NOTES
         TODO Make {$BicepDepFileContent -replace "'.*$ReplaceString'", "'$($NewBicModFile.Name)'"} handle more than 0 path levels
-        TODO write all these temp files to the temp directory so you don't have to deal with it in your workspace
         TODO Write New-BDDeployment controller function
-        TODO If there is not an Outputs[] in builttemplate, add it or convert-bd* will throw
     #>
     [CmdletBinding(SupportsShouldProcess)]
     param (
@@ -68,6 +66,9 @@ function New-BDFile {
             $BuiltModuleContent = (Get-Content $BuiltModule -Encoding 'utf8' -Raw) | ConvertFrom-Json
             $BuiltModuleContent.resources = @()
             $BuiltModuleContent | ConvertTo-Json -Depth 99 | Set-Content $BuiltModule -Force
+        }
+        if (-not $BuiltModuleContent.outputs) {
+            $BuiltModuleContent | Add-Member NoteProperty outputs @() -PassThru | ConvertTo-Json -Depth 99 | Set-Content $BuiltModule -Force
         }
         [PSCustomObject]@{
             BicepDeploymentFile = $NewBicDepFile

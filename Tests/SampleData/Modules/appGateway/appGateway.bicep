@@ -166,7 +166,7 @@ var frontendPrivateIPDynamicConfiguration = {
     id: subnetResourceId
   }
 }
-output frontendPrivateIPDynamicConfiguration object = frontendPrivateIPDynamicConfiguration
+
 var frontendPrivateIPStaticConfiguration = {
   privateIPAllocationMethod: 'Static'
   privateIPAddress: frontendPrivateIpAddress
@@ -174,7 +174,7 @@ var frontendPrivateIPStaticConfiguration = {
     id: subnetResourceId
   }
 }
-output frontendPrivateIPStaticConfiguration object = frontendPrivateIPStaticConfiguration
+
 var redirectConfigurationsHttpRedirectNamePrefix = 'httpRedirect'
 var httpListenerhttpRedirectNamePrefix = 'httpRedirect'
 var requestRoutingRuleHttpRedirectNamePrefix = 'httpRedirect'
@@ -195,16 +195,16 @@ var sslCertificates = [
     }
   }
 ]
-output sslCertificates array = sslCertificates
+
 var frontendPorts = union((empty(frontendHttpListeners) ? frontendHttpListeners : frontendHttpPorts), (empty(frontendHttpsListeners) ? frontendHttpsListeners : frontendHttpsPorts), (empty(frontendHttpRedirects) ? frontendHttpRedirects : frontendHttpRedirectPorts))
 var httpListeners = concat((empty(frontendHttpListeners) ? frontendHttpListeners : frontendHttpListeners_var), (empty(frontendHttpsListeners) ? frontendHttpsListeners : frontendHttpsListeners_var), (empty(frontendHttpRedirects) ? frontendHttpRedirects : frontendHttpRedirects_var))
 var redirectConfigurations = (empty(frontendHttpRedirects) ? frontendHttpRedirects : httpRedirectConfigurations)
 var requestRoutingRules = concat(httpsRequestRoutingRules, (empty(frontendHttpRedirects) ? frontendHttpRedirects : httpRequestRoutingRules))
 
-output frontendPorts array = frontendPorts
-output httpListeners array = httpListeners
-output redirectConfigurations array = redirectConfigurations
-output requestRoutingRules array = requestRoutingRules
+
+
+
+
 
 
 var identityType = !empty(userAssignedIdentities) ? 'UserAssigned' : 'None'
@@ -213,7 +213,7 @@ var identity = identityType != 'None' ? {
   type: identityType
   userAssignedIdentities: !empty(userAssignedIdentities) ? userAssignedIdentities : null
 } : null
-// output identity object = identity
+//
 var backendAddressPools = [for backendPool in backendPools: {
   name: backendPool.backendPoolName
   type: 'Microsoft.Network/applicationGateways/backendAddressPools'
@@ -221,7 +221,7 @@ var backendAddressPools = [for backendPool in backendPools: {
     backendAddresses: contains(backendPool, 'BackendAddresses') ? backendPool.BackendAddresses : []
   }
 }]
-output backendAddressPools array = backendAddressPools
+
 var probes_var = [for probe in probes: {
   name: '${probe.backendHttpConfigurationName}Probe'
   type: 'Microsoft.Network/applicationGateways/probes'
@@ -239,7 +239,7 @@ var probes_var = [for probe in probes: {
     }
   }
 }]
-output probes_var array = probes_var
+
 var backendHttpConfigurations_var = [for backendHttpConfiguration in backendHttpConfigurations: {
   name: backendHttpConfiguration.backendHttpConfigurationName
   properties: {
@@ -251,14 +251,14 @@ var backendHttpConfigurations_var = [for backendHttpConfiguration in backendHttp
     probe: bool(backendHttpConfiguration.probeEnabled) ? json('{"id": "${applicationGatewayResourceId}/probes/${backendHttpConfiguration.backendHttpConfigurationName}Probe"}') : null
   }
 }]
-output backendHttpConfigurations_var array = backendHttpConfigurations_var
+
 var frontendHttpsPorts = [for frontendHttpsListener in frontendHttpsListeners: {
   name: 'port${frontendHttpsListener.port}'
   properties: {
     Port: frontendHttpsListener.port
   }
 }]
-output frontendHttpsPorts array = frontendHttpsPorts
+
 var frontendHttpsListeners_var = [for frontendHttpsListener in frontendHttpsListeners: {
   name: frontendHttpsListener.frontendListenerName
   properties: {
@@ -274,14 +274,14 @@ var frontendHttpsListeners_var = [for frontendHttpsListener in frontendHttpsList
     }
   }
 }]
-output frontendHttpsListeners_var array = frontendHttpsListeners_var
+
 var frontendHttpPorts = [for frontendHttpListener in frontendHttpListeners: {
   name: 'port${frontendHttpListener.port}'
   properties: {
     Port: frontendHttpListener.port
   }
 }]
-output frontendHttpPorts array = frontendHttpPorts
+
 var frontendHttpListeners_var = [for frontendHttpListener in frontendHttpListeners: {
   name: frontendHttpListener.frontendListenerName
   properties: {
@@ -294,7 +294,7 @@ var frontendHttpListeners_var = [for frontendHttpListener in frontendHttpListene
     Protocol: 'http'
   }
 }]
-output frontendHttpListeners_var array = frontendHttpListeners_var
+
 var httpsRequestRoutingRules = [for routingRule in routingRules: {
   name: '${routingRule.frontendListenerName}-${routingRule.backendHttpConfigurationName}-${routingRule.backendHttpConfigurationName}'
   properties: {
@@ -310,14 +310,14 @@ var httpsRequestRoutingRules = [for routingRule in routingRules: {
     }
   }
 }]
-output httpsRequestRoutingRules array = httpsRequestRoutingRules
+
 var frontendHttpRedirectPorts = [for frontendHttpRedirect in frontendHttpRedirects: {
   name: 'port${frontendHttpRedirect.port}'
   properties: {
     Port: frontendHttpRedirect.port
   }
 }]
-output frontendHttpRedirectPorts array = frontendHttpRedirectPorts
+
 var frontendHttpRedirects_var = [for frontendHttpRedirect in frontendHttpRedirects: {
   name: '${httpListenerhttpRedirectNamePrefix}${frontendHttpRedirect.port}'
   properties: {
@@ -330,7 +330,7 @@ var frontendHttpRedirects_var = [for frontendHttpRedirect in frontendHttpRedirec
     Protocol: 'http'
   }
 }]
-output frontendHttpRedirects_var array = frontendHttpRedirects_var
+
 var httpRequestRoutingRules = [for frontendHttpRedirect in frontendHttpRedirects: {
   name: '${requestRoutingRuleHttpRedirectNamePrefix}${frontendHttpRedirect.port}-${frontendHttpRedirect.frontendListenerName}'
   properties: {
@@ -343,7 +343,7 @@ var httpRequestRoutingRules = [for frontendHttpRedirect in frontendHttpRedirects
     }
   }
 }]
-output httpRequestRoutingRules array = httpRequestRoutingRules
+
 var httpRedirectConfigurations = [for frontendHttpRedirect in frontendHttpRedirects: {
   name: '${redirectConfigurationsHttpRedirectNamePrefix}${frontendHttpRedirect.port}'
   properties: {
@@ -360,7 +360,7 @@ var httpRedirectConfigurations = [for frontendHttpRedirect in frontendHttpRedire
     }
   }
 }]
-output httpRedirectConfigurations array = httpRedirectConfigurations
+
 
 resource applicationGateway 'Microsoft.Network/applicationGateways@2021-03-01' = {
   name: name
@@ -437,11 +437,3 @@ resource applicationGateway_diagnosticSettingName 'Microsoft.Insights/diagnostic
 }
 
 
-@description('The name of the application gateway')
-output applicationGatewayName string = applicationGateway.name
-
-@description('The resource ID of the application gateway')
-output applicationGatewayResourceId string = applicationGateway.id
-
-@description('The resource group the application gateway was deployed into')
-output applicationGatewayResourceGroup string = resourceGroup().name
