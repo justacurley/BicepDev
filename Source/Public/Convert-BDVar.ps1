@@ -16,26 +16,48 @@ function Convert-BDVar {
     .INPUTS
         (New-BDFile).BuiltModule
     .NOTES
-        TODO optionally convert specific vars to outputs instead of all of them
     #>
     [CmdletBinding()]
     param (
         [Parameter(Mandatory, ValueFromPipeline, HelpMessage = "The built bicep template returned from New-BDFile")]
         [System.IO.FileInfo]
-        $BuiltModule
+        $BuiltModule,
+        [Parameter(HelpMessage = "Enter names of variables to convert to outputs")]
+        [alias('Vars')]
+        [string[]]
+        $VariablesToConvert
     )
     process {
         $ModuleFileContent = Get-Content $BuiltModule.FullName -Encoding 'utf8' -Raw | ConvertFrom-Json
         $ModuleFileContent.variables | Add-Member 'bdVars' ([pscustomobject]@{})
-        $ModuleFileContent.variables.psobject.Properties | ForEach-Object {
-            $name = $_.name
-            $value = $_.value
-            if ($name -notin @('copy','bdVars')) {
-                $ModuleFileContent.variables.bdVars | Add-Member NoteProperty $name $PSItem.Value -Force
+        if ($VariablesToConvert) {
+            foreach ($Variable in $VariablesToConvert) {
+                #Check both top level variables and nested vars inside the 'copy' variable
+                if ($ModuleFileContent.variables.psobject.properties.name -notcontains $Variable) {
+                    if ($ModuleFileContent.variables.copy.name -notcontains $Variable) {
+                        Write-Warning "Could not find a variable named $Variable"
+                    }
+                    else {
+                        $ModuleFileContent.variables.bdVars | Add-Member NoteProperty $Variable ("[variables('{0}')]" -f $Variable) -Force
+                    }
+                }
+                else {
+                    $ModuleFileContent.variables.bdVars | Add-Member NoteProperty $Variable $ModulefileContent.variables.$Variable -Force
+                }
+
             }
-            elseif ($name -eq 'copy') {
-                foreach ($copyArray in $value) {
-                    $ModuleFileContent.variables.bdVars | Add-Member NoteProperty $copyArray.Name ("[variables('{0}')]" -f $copyArray.name) -Force
+        }
+        else {
+            $ModuleFileContent.variables.psobject.Properties | ForEach-Object {
+                $name = $_.name
+                $value = $_.value
+                if ($name -notin @('copy','bdVars')) {
+                    $ModuleFileContent.variables.bdVars | Add-Member NoteProperty $name $PSItem.Value -Force
+                }
+                elseif ($name -eq 'copy') {
+                    foreach ($copyArray in $value) {
+                        $ModuleFileContent.variables.bdVars | Add-Member NoteProperty $copyArray.Name ("[variables('{0}')]" -f $copyArray.name) -Force
+                    }
                 }
             }
         }

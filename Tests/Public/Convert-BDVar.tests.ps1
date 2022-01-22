@@ -9,17 +9,57 @@ BeforeDiscovery {
     Get-ChildItem $PSScriptRoot\..\SampleData -Recurse -File -Filter *_throwBuild.bicep | Remove-Item
 }
 Describe "Convert-BDVar" {
-    BeforeAll {
-        $script:BicepDeploymentFile = Get-ChildItem $PSScriptRoot\.. -Recurse -File -Filter deploy.bicep
-        $script:BicepModuleFile = Get-ChildItem $PSScriptRoot\.. -Recurse -File -Filter appGateway.bicep
-        Write-Information "Testing $($BicepModuleFile.Name) deployment file in '$(Convert-Path $PSScriptRoot\..)'" -InformationAction Continue
-        $Parameters = @{
-            BicepDeploymentFile = $BicepDeploymentFile.FullName
-            BicepModuleFile     = $BicepModuleFile.FullName
+    Context "Convert ALL vars" {
+        BeforeAll {
+            $script:BicepDeploymentFile = Get-ChildItem $PSScriptRoot\.. -Recurse -File -Filter deploy.bicep
+            $script:BicepModuleFile = Get-ChildItem $PSScriptRoot\.. -Recurse -File -Filter appGateway.bicep
+            Write-Information "Testing $($BicepModuleFile.Name) deployment file in '$(Convert-Path $PSScriptRoot\..)'" -InformationAction Continue
+            $Parameters = @{
+                BicepDeploymentFile = $BicepDeploymentFile.FullName
+                BicepModuleFile     = $BicepModuleFile.FullName
+            }
+            $script:BD = New-BDFile @Parameters
+            $BD.BuiltModule | Convert-BDVar
+            $script:BuiltModuleContent = Get-Content -Path $BD.BuiltModule | ConvertFrom-Json
         }
-        $script:BD = New-BDFile @Parameters
+
+        it "should stuff all variables in bdVars variable" {
+            $CopyVars = $BuiltModuleContent.variables.copy
+            $CopyVars.Name | % {$_ | Should -BeIn $BuiltModuleContent.variables.bdVars.psobject.properties.name}
+        }
+        it "should create bdVars object in output" {
+            'bdVars' | Should -BeIn $BuiltModuleContent.Outputs.psobject.properties.name
+        }
+        it "should cleanup" {
+            {$BD | Remove-BDFile} | Should -Not -Throw
+        }
     }
-    it "should convert all variables to outputs" {
-        {$BD | Remove-BDFile} | Should -Not -Throw
+    Context "Convert specific vars" {
+        BeforeAll {
+            $script:BicepDeploymentFile = Get-ChildItem $PSScriptRoot\.. -Recurse -File -Filter deploy.bicep
+            $script:BicepModuleFile = Get-ChildItem $PSScriptRoot\.. -Recurse -File -Filter appGateway.bicep
+            Write-Information "Testing $($BicepModuleFile.Name) deployment file in '$(Convert-Path $PSScriptRoot\..)'" -InformationAction Continue
+            $Parameters = @{
+                BicepDeploymentFile = $BicepDeploymentFile.FullName
+                BicepModuleFile     = $BicepModuleFile.FullName
+            }
+            $script:BD = New-BDFile @Parameters
+            $BD.BuiltModule | Convert-BDVar -VariablesToConvert 'diagnosticsMetrics','applicationGatewayResourceId','foo'
+            $script:BuiltModuleContent = Get-Content -Path $BD.BuiltModule | ConvertFrom-Json
+        }
+
+        it "should have diagnosticsMetrics and applicationGatewayResourceId in bdVars" {
+            'diagnosticsMetrics','applicationGatewayResourceId' | Should -BeIn $BuiltModuleContent.variables.bdVars.psobject.properties.name
+        }
+        it "should not add missing vars to bdVars" {
+            'foo' | Should -Not -BeIn $BuiltModuleContent.variables.bdVars.psobject.properties.name
+        }
+        it "should create bdVars object in output" {
+            'bdVars' | Should -BeIn $BuiltModuleContent.Outputs.psobject.properties.name
+        }
+        it "should cleanup" {
+            {$BD | Remove-BDFile} | Should -Not -Throw
+        }
+
     }
 }
