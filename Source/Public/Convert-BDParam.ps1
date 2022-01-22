@@ -14,20 +14,33 @@ function Convert-BDParam {
     param (
         [Parameter(Mandatory, ValueFromPipeline, HelpMessage = "The built bicep template returned from New-BDFile")]
         [System.IO.FileInfo]
-        $BuiltModule
-        # TODO optionally convert specific params to outputs instead of all of them
-        # [Parameter(HelpMessage = "Enter names of parameters to convert to outputs")]
-        # [alias('Params')]
-        # [string[]]
-        # $ParametersToConvert
+        $BuiltModule,
+        [Parameter(HelpMessage = "Enter names of parameters to convert to outputs")]
+        [alias('Params')]
+        [string[]]
+        $ParametersToConvert
     )
     process {
         $ModuleFileContent = Get-Content $BuiltModule.FullName -Encoding 'utf8' -Raw | ConvertFrom-Json
-        $ModuleFileContent.parameters.psobject.Properties | ForEach-Object {
+        $ModuleFileContent.variables | Add-Member 'bdParams' ([pscustomobject]@{})
+        if ($ParametersToConvert) {
+           $Parameters = $ModuleFileContent.parameters.psobject.Properties | Where-Object {$_.Name -in $ParametersToConvert}
+           Write-Verbose "Found $($Parameters.Count) of $($ParametersToConvert.Count) parameters to convert"
+           if ($Parameters.Count -ne $ParametersToConvert.Count) {
+            $MissingParams=(($ParametersToConvert | Where-Object {$_ -notin $ModuleFileContent.parameters.psobject.Properties.Name}) -join ', ')
+               Write-Warning "Could not find these provided params: $MissingParams"
+           }
+        }
+        else {
+            $Parameters = $ModuleFileContent.parameters.psobject.Properties
+            Write-Verbose "Found $($Parameters.Count) parameters to convert"
+        }
+        $Parameters | ForEach-Object {
             $name = $_.name
             $value = "[parameters('{0}')]" -f $name
-            $ModuleFileContent.outputs | Add-Member NoteProperty "pars_$name" @{type = $PSItem.Value.type; value = $value } -Force
+            $ModuleFileContent.variables.bdParams | Add-Member NoteProperty $name $value -Force
         }
+        $ModuleFileContent.outputs | Add-Member NoteProperty "bdParams" @{type = 'object'; value = "[variables('bdParams')]" } -Force
         $ModuleFileContent | ConvertTo-Json -Depth 99 | Out-File $BuiltModule.FullName
     }
 }
