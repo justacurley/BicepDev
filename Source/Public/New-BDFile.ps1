@@ -68,7 +68,7 @@ function New-BDFile {
             $BuiltModuleContent | ConvertTo-Json -Depth 99 | Set-Content $BuiltModule -Force
         }
         if (-not $BuiltModuleContent.outputs) {
-            $BuiltModuleContent | Add-Member NoteProperty outputs @() -PassThru | ConvertTo-Json -Depth 99 | Set-Content $BuiltModule -Force
+            $BuiltModuleContent | Add-Member NoteProperty outputs ([PSCustomObject]@{}) -PassThru | ConvertTo-Json -Depth 99 | Set-Content $BuiltModule -Force
         }
         [PSCustomObject]@{
             BicepDeploymentFile = $NewBicDepFile
