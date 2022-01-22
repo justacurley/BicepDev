@@ -14,7 +14,6 @@ function Remove-BDFile {
     [CmdletBinding(SupportsShouldProcess)]
     param (
         [Parameter(ValueFromPipelineByPropertyName, HelpMessage = "The .bicep file that calls the bicep module we want to transform", ParameterSetName = 'pipe')]
-
         [Alias('Deploy')]
         [System.IO.FileInfo]
         $BicepDeploymentFile,

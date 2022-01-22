@@ -22,7 +22,7 @@ function New-BDFile {
         TODO Catch failed bicep builds
         TODO write all these temp files to the temp directory so you don't have to deal with it in your workspace
         TODO Write New-BDDeployment controller function
-        TODO If there is not an Outputs[] in builttemplate, add it or convert-bd* will throw 
+        TODO If there is not an Outputs[] in builttemplate, add it or convert-bd* will throw
     #>
     [CmdletBinding(SupportsShouldProcess)]
     param (
@@ -55,7 +55,7 @@ function New-BDFile {
 
     #If build was successful, update the path to $NewBicepModFile with the json file we built and return object for pipeline
     $BicepBuild = bicep build $NewBicModFile.FullName 2>&1
-    Write-Host ($BicepBuild | Where-Object { $_ -like "*: Warning BCP*" }).foreach({"$_`n"})
+    ($BicepBuild | Where-Object { $_ -like "*: Warning BCP*" }).foreach({Write-Warning $_})
     $BuiltModule = Get-Item ([Io.Path]::ChangeExtension($NewBicModFile.FullName, ".json")) -ErrorAction Ignore
 
     if ($BuiltModule) {
