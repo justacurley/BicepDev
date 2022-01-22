@@ -17,7 +17,6 @@ function Convert-BDVar {
         (New-BDFile).BuiltModule
     .NOTES
         TODO optionally convert specific vars to outputs instead of all of them
-        TODO all template variables should go into ONE output variable instead of split out as it is now
     #>
     [CmdletBinding()]
     param (
