@@ -2,7 +2,7 @@
 #requires -Module @{ModuleName="Pester"; ModuleVersion="5.3.1"}
 BeforeDiscovery {
     if ($env:Path -notmatch "Bicep CLI") {
-        $BicepPath = Resolve-Path $PSScriptRoot\..\..\Modules\
+        $BicepPath = Resolve-Path $PSScriptRoot\..
         $env:Path += $env:Path + ";$BicepPath"
     }
     Get-ChildItem $PSScriptRoot\..\SampleData -Recurse -File -Filter *_deploy.bicep | Remove-Item
