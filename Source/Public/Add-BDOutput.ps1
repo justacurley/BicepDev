@@ -18,7 +18,7 @@ function Add-BDOutput {
     #>
     [CmdletBinding()]
     param (
-        [Parameter(Mandatory, ValueFromPipeline, HelpMessage = "The built bicep template returned from New-BDFile")]
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, HelpMessage = "The built bicep template returned from New-BDFile")]
         [System.IO.FileInfo]
         $BuiltModule,
         [parameter(Mandatory, HelpMessage = "Name of the output")]
