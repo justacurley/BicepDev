@@ -19,7 +19,7 @@ Describe "Convert-BDVar" {
                 BicepModuleFile     = $BicepModuleFile.FullName
             }
             $script:BD = New-BDFile @Parameters
-            $BD.BuiltModule | Convert-BDVar
+            $BD | Convert-BDVar
             $script:BuiltModuleContent = Get-Content -Path $BD.BuiltModule | ConvertFrom-Json
         }
 
@@ -44,7 +44,7 @@ Describe "Convert-BDVar" {
                 BicepModuleFile     = $BicepModuleFile.FullName
             }
             $script:BD = New-BDFile @Parameters
-            $BD.BuiltModule | Convert-BDVar -VariablesToConvert 'diagnosticsMetrics','applicationGatewayResourceId','foo'
+            $BD | Convert-BDVar -VariablesToConvert 'diagnosticsMetrics','applicationGatewayResourceId','foo'
             $script:BuiltModuleContent = Get-Content -Path $BD.BuiltModule | ConvertFrom-Json
         }
 

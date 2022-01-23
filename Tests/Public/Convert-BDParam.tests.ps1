@@ -19,7 +19,7 @@ Describe "Convert-BDParam" {
                 BicepModuleFile     = $BicepModuleFile.FullName
             }
             $script:BD = New-BDFile @Parameters
-            $BD.BuiltModule | Convert-BDParam
+            $BD | Convert-BDParam
             $script:BuiltModuleContent = Get-Content -Path $BD.BuiltModule | ConvertFrom-Json
         }
         it "should stuff all parameters in bdParams variable" {
@@ -43,7 +43,7 @@ Describe "Convert-BDParam" {
                 BicepModuleFile     = $BicepModuleFile.FullName
             }
             $script:BD = New-BDFile @Parameters
-            $BD.BuiltModule | Convert-BDParam -ParametersToConvert 'sku','capacity','foo'
+            $BD | Convert-BDParam -ParametersToConvert 'sku','capacity','foo'
             $script:BuiltModuleContent = Get-Content -Path $BD.BuiltModule | ConvertFrom-Json
         }
         it "should have sku and capacity in bdParams" {
