@@ -33,7 +33,7 @@ function Convert-BDParam {
         }
         else {
             $Parameters = $ModuleFileContent.parameters.psobject.Properties
-            Write-Verbose "Found $($Parameters.Count) parameters to convert"
+            Write-Verbose "Found $($Parameters.Name.Count) parameters to convert"
         }
         $Parameters | ForEach-Object {
             $name = $_.name
