@@ -75,3 +75,11 @@ jobs:
         with:
           name: Pester Results
           path: ${{github.workspace}}/*.xml
+          
+  publish:
+    runs-on: windows-latest
+    needs: test
+    if: success()
+    steps:
+      - name: Download Build Output
+        uses: actions/download-artifact@v2
