@@ -12,7 +12,7 @@ function Convert-BDParam {
     #>
     [CmdletBinding()]
     param (
-        [Parameter(Mandatory, ValueFromPipeline, HelpMessage = "The built bicep template returned from New-BDFile")]
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, HelpMessage = "The built bicep template returned from New-BDFile")]
         [System.IO.FileInfo]
         $BuiltModule,
         [Parameter(HelpMessage = "Enter names of parameters to convert to outputs")]
@@ -22,7 +22,7 @@ function Convert-BDParam {
     )
     process {
         $ModuleFileContent = Get-Content $BuiltModule.FullName -Encoding 'utf8' -Raw | ConvertFrom-Json
-        $ModuleFileContent.variables | Add-Member 'bdParams' ([pscustomobject]@{})
+        $ModuleFileContent.variables | Add-Member 'bdParams' ([pscustomobject]@{}) -Force
         if ($ParametersToConvert) {
            $Parameters = $ModuleFileContent.parameters.psobject.Properties | Where-Object {$_.Name -in $ParametersToConvert}
            Write-Verbose "Found $($Parameters.Count) of $($ParametersToConvert.Count) parameters to convert"
