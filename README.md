@@ -1,4 +1,5 @@
 [![Build on push](https://github.com/justacurley/BicepDev/actions/workflows/build.yml/badge.svg)](https://github.com/justacurley/BicepDev/actions/workflows/build.yml)
+[![BicepDev](https://img.shields.io/powershellgallery/v/BicepDev.svg?style=flat-square&label=BicepDev)](https://www.powershellgallery.com/packages/BicepDev/)
 
 # BicepDev
 ## Description
