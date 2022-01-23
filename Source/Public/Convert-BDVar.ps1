@@ -19,7 +19,7 @@ function Convert-BDVar {
     #>
     [CmdletBinding()]
     param (
-        [Parameter(Mandatory, ValueFromPipeline, HelpMessage = "The built bicep template returned from New-BDFile")]
+        [Parameter(Mandatory, ValueFromPipelineByPropertyName, HelpMessage = "The built bicep template returned from New-BDFile")]
         [System.IO.FileInfo]
         $BuiltModule,
         [Parameter(HelpMessage = "Enter names of variables to convert to outputs")]
@@ -29,7 +29,7 @@ function Convert-BDVar {
     )
     process {
         $ModuleFileContent = Get-Content $BuiltModule.FullName -Encoding 'utf8' -Raw | ConvertFrom-Json
-        $ModuleFileContent.variables | Add-Member 'bdVars' ([pscustomobject]@{})
+        $ModuleFileContent.variables | Add-Member 'bdVars' ([pscustomobject]@{}) -Force
         if ($VariablesToConvert) {
             foreach ($Variable in $VariablesToConvert) {
                 #Check both top level variables and nested vars inside the 'copy' variable
