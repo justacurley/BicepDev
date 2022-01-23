@@ -2,6 +2,8 @@ function Remove-BDFile {
     <#
     .SYNOPSIS
         Deletes files created by New-BDFile
+    .DESCRIPTION
+        Either delete all files from current session (Output of New-BDFile) or make a best effort at deleting all .json and .bicep files in the directory provided with RemoveFromDirectory
     .EXAMPLE
         PS C:\> New-BDFile -BicepDeploymentFile testAppGateway.bicep -BicepModuleFile appGateway.bicep -outvariable $BD
         PS C:\> $BD | Remove-BDFile

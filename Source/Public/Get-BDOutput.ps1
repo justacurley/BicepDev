@@ -2,6 +2,8 @@ function Get-BDOutput {
     <#
     .SYNOPSIS
         Convert JObject, returned from 'Outputs' property of New-AzResourceGroupDeployment, to PSCustomObject.
+    .DESCRIPTION
+        This is a simple quality of life feature, since the output of New-AzResourceGroupDeployment isn't readily usable in PS
     .EXAMPLE
         PS C:\> New-BDFile -BicepDeploymentFile testAppGateway.bicep -BicepModuleFile appGateway.bicep -outvariable $BD
         PS C:\> New-AzResourceGroupDeployment -ResourceGroupName 'rg-bdfiles' -TemplateFile $BD.BuiltModule | Get-BDOutput -OutputName $BD.OutputName

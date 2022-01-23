@@ -1,7 +1,9 @@
 function Convert-BDParam {
     <#
     .SYNOPSIS
-        Converts all parameters in an arm template to ouputs
+        Converts parameters in an arm template to ouputs
+    .DESCRIPTION
+        Either convert all parameters, or those parameters specified in ParametersToConvert, to outputs
     .EXAMPLE
         PS C:\> New-BDFile -BicepDeploymentFile testAppGateway.bicep -BicepModuleFile appGateway.bicep -outvariable $BD
         PS C:\> $BD.BuiltModule | Convert-BDParam
