@@ -14,22 +14,22 @@ I got tired of keeping my copy up to date, and the slim usefulness of the blank 
 The real beauty here is being able to test variables and parameters as data is passed through linked templates.
 
 ## BicepDev Cmdlets
-### [Add-BDOutput](Docs\Add-BDOutput.md)
+### [Add-BDOutput](Docs/Add-BDOutput.md)
 Add outputs to an arm template created by New-BDFile
 
-### [Convert-BDParam](Docs\Convert-BDParam.md)
+### [Convert-BDParam](Docs/Convert-BDParam.md)
 Converts all parameters in an arm template to ouputs
 
-### [Convert-BDVar](Docs\Convert-BDVar.md)
+### [Convert-BDVar](Docs/Convert-BDVar.md)
 Converts all variables in an arm template to ouputs
 
-### [Get-BDOutput](Docs\Get-BDOutput.md)
+### [Get-BDOutput](Docs/Get-BDOutput.md)
 Convert JObject, returned from 'Outputs' property of New-AzResourceGroupDeployment, to PSCustomObject.
 
-### [New-BDFile](Docs\New-BDFile.md)
+### [New-BDFile](Docs/New-BDFile.md)
 Creates copies of bicep files to be used for testing with this module.
 
-### [Remove-BDFile](Docs\Remove-BDFile.md)
+### [Remove-BDFile](Docs/Remove-BDFile.md)
 Deletes files created by New-BDFile
 
 
