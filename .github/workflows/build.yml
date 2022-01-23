@@ -79,7 +79,7 @@ jobs:
   publish:
     runs-on: windows-latest
     needs: test
-    if: and(success(),"!contains(github.event.head_commit.message, 'PSGalleryPublish')")
+    if: ${{ success() && contains(github.event.head_commit.message, 'PSGalleryPublish') }}
     steps:
       - name: Download Build Output
         uses: actions/download-artifact@v2
