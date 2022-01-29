@@ -13,7 +13,7 @@ branches:
     tag: rc
     increment: Patch
   feature:
-    regex: .*/
+    regex: feature/
     tag: useBranchName
     increment: Patch
     source-branches: ['main', 'feature']
