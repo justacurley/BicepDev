@@ -17,7 +17,17 @@ jobs:
 
       - name: test gitversion
         shell: pwsh
-        run: gitversion /diag
+        run: Write-Host "::group::{dotnet tool install}"
+              dotnet tool install --global GitVersion.Tool # --version 5.6.0
+              Write-Host "::endgroup::"
+
+              $ofs = "`n"
+              [string]$gitversion = dotnet-gitversion -url "https://github.com/justacurley/BicepDev.git" -b refs/remotes/pull/2/merge -c ec3a7ce113134d7a93b817d10a8272cb61118579
+              Write-Verbose $gitversion -Verbose
+
+              (ConvertFrom-Json -InputObject $gitversion -AsHashtable).GetEnumerator().ForEach{
+                  "::set-output name=$($_.Key)::$($_.Value)"
+              }
 
   #     - name: GitVersion
   #       id: gitversion
