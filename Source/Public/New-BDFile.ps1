@@ -51,8 +51,10 @@ function New-BDFile {
     $BicepDepFileContent | Set-Content $NewBicDepFile -Force
 
     #If build was successful, update the path to $NewBicepModFile with the json file we built and return object for pipeline
-    $BicepBuild = bicep build $NewBicModFile.FullName 2>&1
-    ($BicepBuild | Where-Object { $_ -like "*: Warning BCP*" }).foreach({Write-Warning $_})
+    #We have to build twice, the second time with --stdout, becasue something has changed in githubs windows-latest build servers
+    # that it no longer allows redirecting output without --stdout
+    $BicepBuild = bicep build $NewBicModFile.FullName
+    $Warnings = bicep build $NewBicModFile.FullName --stdout 2>&1
     $BuiltModule = Get-Item ([Io.Path]::ChangeExtension($NewBicModFile.FullName, ".json")) -ErrorAction Ignore
 
     if ($BuiltModule) {
@@ -84,8 +86,8 @@ function New-BDFile {
         if (Test-Path $NewBicModFile) {
             Remove-BDfile -BicepModuleFile $NewBicModFile
         }
-        if ($BicepBuild -Match ": Error BCP") {
-            throw ($BicepBuild | Where-Object { $_ -like "*: Error BCP*" })
+        if ($Warnings -Match ": Error BCP") {
+            throw ($Warnings | Where-Object { $_ -like "*: Error BCP*" })
         }
     }
 }
