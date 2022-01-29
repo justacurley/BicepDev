@@ -34,7 +34,7 @@ function Remove-BDFile {
     process {
         if ($RemoveFromDirectory) {
             Write-Verbose "Searching for bicep and json files in $RemoveFromDirectory"
-            Get-ChildItem -Path $RemoveFromDirectory -Recurse -File -Include *.bicep,*.json | Where-Object {$_.Name -match "(\d|[a-z]){4}_"} | Foreach-Object {
+            Get-ChildItem -Path $RemoveFromDirectory -Recurse -File -Include *.bicep,*.json | Where-Object {$_.Name -match "^(\d|[a-z]){4}_"} | Foreach-Object {
                 Write-Verbose "Attempting to remove $($_.FullName)"
                 $_ | Remove-Item -Force
             }
