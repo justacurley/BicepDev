@@ -16,7 +16,7 @@ branches:
     regex: .*/
     tag: useBranchName
     increment: Patch
-    source-branches: ['main', 'feature', 'fix']
+    source-branches: ['main', 'feature']
     track-merge-target: true
   release:
     tag: ''
