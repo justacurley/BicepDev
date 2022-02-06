@@ -17,7 +17,6 @@ Describe "New-BDFile" {
             BicepDeploymentFile = $BicepDeploymentFile.FullName
             BicepModuleFile     = $BicepModuleFile.FullName
         }
-
     }
     it "should return 4 properties" {
         $BD = New-BDFile @Parameters

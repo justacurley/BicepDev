@@ -6,17 +6,17 @@ assembly-informational-format: '{NuGetVersionV2}+Build.{env:BUILDCOUNT ?? 0}.Dat
 commit-date-format: yyyyMMddTHHmmss
 
 branches:
-  master:
+  main:
     increment: Patch
     is-release-branch: true
   pull-request:
     tag: rc
     increment: Patch
   feature:
-    regex: .*/
+    regex: feature/
     tag: useBranchName
     increment: Patch
-    source-branches: ['master', 'feature']
+    source-branches: ['main', 'feature']
     track-merge-target: true
   release:
     tag: ''
