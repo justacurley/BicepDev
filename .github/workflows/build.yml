@@ -24,5 +24,5 @@ jobs:
 
       - name: What is going on here
         shell: pwsh
-        run: ${{github.workspace}}\Tests\bicep.exe build ${{github.workspace}}\Tests\SampleData\Modules\deploy.bicep
+        run: ${{github.workspace}}\Tests\bicep.exe build ${{github.workspace}}\Tests\SampleData\Modules\appGateway\deploy.bicep
 
