@@ -58,7 +58,7 @@ jobs:
           path: ${{github.workspace}}/PSScriptAnalyzerSettings.psd1
 
   test:
-    runs-on: windows-2016
+    runs-on: windows-latest
     needs: build
     steps:
       - name: Download Build Output
