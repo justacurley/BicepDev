@@ -12,7 +12,7 @@
     RootModule        = 'BicepDev.psm1'
 
     # Version number of this module.
-    ModuleVersion     = '1.0.0'
+    ModuleVersion     = '1.0.7'
 
     # ID used to uniquely identify this module
     GUID              = 'e7b7ad99-9a19-4e02-b062-edc7121103f8'
