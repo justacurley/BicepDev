@@ -51,10 +51,8 @@ function New-BDFile {
     $BicepDepFileContent | Set-Content $NewBicDepFile -Force
 
     #If build was successful, update the path to $NewBicepModFile with the json file we built and return object for pipeline
-    #We have to build twice, the second time with --stdout, becasue something has changed in githubs windows-latest build servers
-    # that it no longer allows redirecting output without --stdout
-    $BicepBuild = bicep build $NewBicModFile.FullName
-    $Warnings = bicep build $NewBicModFile.FullName --stdout 2>&1
+    $ErrorLog = Join-Path $env:TEMP "$($GUID)_errors.log"
+    $BicepBuild = Start-Process bicep -ArgumentList "build $($NewBicModFile.FullName)" -RedirectStandardError $ErrorLog -Wait
     $BuiltModule = Get-Item ([Io.Path]::ChangeExtension($NewBicModFile.FullName, ".json")) -ErrorAction Ignore
 
     if ($BuiltModule) {
@@ -79,6 +77,7 @@ function New-BDFile {
             OutputName          = $OutputName
         }
     }
+    #Remove BD files created if we didn't successfully build a module
     else {
         if (Test-Path $NewBicDepFile) {
             Remove-BDFile -BicepDeploymentFile $NewBicDepFile
@@ -86,8 +85,14 @@ function New-BDFile {
         if (Test-Path $NewBicModFile) {
             Remove-BDfile -BicepModuleFile $NewBicModFile
         }
-        if ($Warnings -Match ": Error BCP") {
-            throw ($Warnings | Where-Object { $_ -like "*: Error BCP*" })
+    }
+    #Spit out any errors or warnings from bicep.exe build
+    if ($ErrorsAndWarnings = Get-Content $ErrorLog) {
+        if ($ErrorsAndWarnings -Match ": Error BCP") {
+            throw ($ErrorsAndWarnings | Where-Object { $_ -like "*: Error BCP*" })
+        }
+        if ($ErrorsAndWarnings -Match ": Warning BCP") {
+            ($ErrorsAndWarnings | Where-Object { $_ -like "*: Warning BCP*" }).ForEach({Write-Warning $_})
         }
     }
 }
