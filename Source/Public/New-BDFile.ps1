@@ -51,8 +51,7 @@ function New-BDFile {
     $BicepDepFileContent | Set-Content $NewBicDepFile -Force
 
     #If build was successful, update the path to $NewBicepModFile with the json file we built and return object for pipeline
-    $ErrorLog = Join-Path $env:TEMP "$($GUID)_errors.log"
-    $BicepBuild = Start-Process bicep -ArgumentList "build $($NewBicModFile.FullName)" -RedirectStandardError $ErrorLog -Wait
+    $BicepBuild = bicep build $($NewBicModFile.FullName)
     $BuiltModule = Get-Item ([Io.Path]::ChangeExtension($NewBicModFile.FullName, ".json")) -ErrorAction Ignore
 
     if ($BuiltModule) {
@@ -85,14 +84,6 @@ function New-BDFile {
         if (Test-Path $NewBicModFile) {
             Remove-BDfile -BicepModuleFile $NewBicModFile
         }
-    }
-    #Spit out any errors or warnings from bicep.exe build
-    if ($ErrorsAndWarnings = Get-Content $ErrorLog) {
-        if ($ErrorsAndWarnings -Match ": Error BCP") {
-            throw ($ErrorsAndWarnings | Where-Object { $_ -like "*: Error BCP*" })
-        }
-        if ($ErrorsAndWarnings -Match ": Warning BCP") {
-            ($ErrorsAndWarnings | Where-Object { $_ -like "*: Warning BCP*" }).ForEach({Write-Warning $_})
-        }
+        throw "Failed to build bicep file"
     }
 }
