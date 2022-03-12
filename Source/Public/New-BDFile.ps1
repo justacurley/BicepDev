@@ -18,7 +18,6 @@ function New-BDFile {
     .OUTPUTS
         [PSCustomObject]
     .NOTES
-        TODO Make {$BicepDepFileContent -replace "'.*$ReplaceString'", "'$($NewBicModFile.Name)'"} handle more than 0 path levels
         TODO Write New-BDDeployment controller function
     #>
     [CmdletBinding(SupportsShouldProcess)]
@@ -47,7 +46,7 @@ function New-BDFile {
     #Replace path to $BicepModuleFile with $NewBicepModFile in $BicepDeploymentFile and build
     $ReplaceString = Split-Path $BicepModuleFile -Leaf
     $BicepDepFileContent = Get-Content $NewBicDepFile -Encoding 'utf8' -Raw
-    $BicepDepFileContent = $BicepDepFileContent -replace "'.*$ReplaceString'", "'$($NewBicModFile.Name)'"
+    $BicepDepFileContent = $BicepDepFileContent -replace "$ReplaceString\'.?=", "$($NewBicModFile.Name)' ="
     $BicepDepFileContent | Set-Content $NewBicDepFile -Force
 
     #If build was successful, update the path to $NewBicepModFile with the json file we built and return object for pipeline
