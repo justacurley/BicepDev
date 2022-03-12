@@ -11,8 +11,9 @@ BeforeDiscovery {
 Describe "Convert-BDParam" {
     Context "Convert ALL params" {
         BeforeAll {
-            $script:BicepDeploymentFile = Get-ChildItem $PSScriptRoot\.. -Recurse -File -Filter deploy.bicep
-            $script:BicepModuleFile = Get-ChildItem $PSScriptRoot\.. -Recurse -File -Filter appGateway.bicep
+            $appGatewayTestFolder = Get-ChildItem $PSScriptRoot\.. -Recurse -Directory -Filter appGateway
+            $script:BicepDeploymentFile = Get-ChildItem $appGatewayTestFolder -Recurse -File -Filter deploy.bicep
+            $script:BicepModuleFile = Get-ChildItem $appGatewayTestFolder -Recurse -File -Filter appGateway.bicep
             Write-Information "Testing $($BicepModuleFile.Name) deployment file in '$(Convert-Path $PSScriptRoot\..)'" -InformationAction Continue
             $Parameters = @{
                 BicepDeploymentFile = $BicepDeploymentFile.FullName
@@ -35,8 +36,9 @@ Describe "Convert-BDParam" {
     }
     Context "Convert specific params" {
         BeforeAll {
-            $script:BicepDeploymentFile = Get-ChildItem $PSScriptRoot\.. -Recurse -File -Filter deploy.bicep
-            $script:BicepModuleFile = Get-ChildItem $PSScriptRoot\.. -Recurse -File -Filter appGateway.bicep
+            $appGatewayTestFolder = Get-ChildItem $PSScriptRoot\.. -Recurse -Directory -Filter appGateway
+            $script:BicepDeploymentFile = Get-ChildItem $appGatewayTestFolder -Recurse -File -Filter deploy.bicep
+            $script:BicepModuleFile = Get-ChildItem $appGatewayTestFolder -Recurse -File -Filter appGateway.bicep
             Write-Information "Testing $($BicepModuleFile.Name) deployment file in '$(Convert-Path $PSScriptRoot\..)'" -InformationAction Continue
             $Parameters = @{
                 BicepDeploymentFile = $BicepDeploymentFile.FullName
